@@ -1,1 +1,3 @@
-contain codes to connect to network api using retrofit2 and RxJava library.
+Contain codes to connect to network api using retrofit2 and RxJava library.
+
+ApiModule and ClientModule are two modules inside core that help us with providing retrofit dependencies,

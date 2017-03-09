@@ -4,6 +4,8 @@ import dagger.Subcomponent;
 
 /**
  * Created by jorgecasariego on 7/3/17.
+ *
+ * CacheSubComponent is an ApplicationComponent's Subcomponent
  */
 @Cache
 @Subcomponent(modules = {

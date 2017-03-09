@@ -10,6 +10,20 @@ import jorgecasariego.marvelspanish.character.search.SearchSubComponent;
 
 /**
  * Created by jorgecasariego on 7/3/17.
+ *
+ * We're responsible for CacheSubComponent and SearchSubComponent lifecycle. So, we should care
+ * about initialization and release on it.
+ *
+ * public CacheSubComponent createCacheSubComponent() {
+ *    ...
+ * }
+ *
+ * public void releaseCacheSubComponent() {
+ *    ...
+ * }
+ *
+ * This class is abstract which complete in debug or release buildTypes by implementing
+ * initApplication() method which comes handy for doing things for release version or debug version.
  */
 
 public abstract class MarvelApplication extends Application {

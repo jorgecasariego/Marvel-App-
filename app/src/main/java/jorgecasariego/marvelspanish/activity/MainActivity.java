@@ -24,6 +24,12 @@ import jorgecasariego.marvelspanish.database.model.CharacterModel;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
+/**
+ * In MarvelApplication class we create application component once and use it in Activities and
+ * Fragments by extending BaseActivity and BaseFragment classes. Both of them are abstract and
+ * the injectDependencies method must be implemented inside the Activity or Fragment.
+ *
+ */
 public class MainActivity extends BaseActivity {
 
     public static final String TAG_SEARCH_FRAGMENT = "search_fragment";

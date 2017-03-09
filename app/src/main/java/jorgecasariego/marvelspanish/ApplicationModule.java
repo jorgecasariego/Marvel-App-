@@ -22,6 +22,19 @@ import okhttp3.HttpUrl;
 
 /**
  * Created by jorgecasariego on 7/3/17.
+ *
+ * Almost all application requirements are being provided in this module:
+ *  - isDebug: use BuildConfig.DEBUG boolean variable to check if the running instance of
+ *             application is in debug mode and use it for logging network API calls in logcat.
+ *
+ *  - networkTimeoutInSeconds, cacheSize, cacheMaxAge, cacheMaxStale, cacheDir:
+ *              provide network parameters which being used when creating the OkHttp client for Retrofit.
+ *
+ *  - endpoint: provide the API’s endpoint for retrofit.
+ *
+ *  - appScheduler: provide RxAndroid schedulers
+ *
+ *  - isConnect: provide network state for handling offline situations.
  */
 @Module
 public class ApplicationModule {

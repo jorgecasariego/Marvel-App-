@@ -40,6 +40,11 @@ public class SearchInteractorImpl implements SearchInteractor {
             // generate hash using timestamp and API keys
             String hash = HashGenerator.generate(timestamp, privateKey, publicKey);
 
+            /**
+             *    all mapping things happen inside background thread, cause we specified it using
+             *    subscribeOn inside SearchInteractorImpl class, and this is how it would never
+             *    interrupt the MainThread to cause any lag or even ANRs.
+             */
             characterSubscription = api.getCharacters(query, publicKey, hash, timestamp)
                     .subscribeOn(scheduler.backgroundThread())
                     .subscribe(characterSubject);

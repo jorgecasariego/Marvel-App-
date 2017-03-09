@@ -45,6 +45,20 @@ class SearchPresenterImpl implements SearchPresenter {
             view.showProgress();
         }
 
+        /**
+             There are four MAP operator applied to API response inside SearchPresenterImpl:
+
+             - The 1st map, check if the response code from API is Okay, and if not an exception will
+                    throw later. Make sure that you use ‘Exceptions.propagate’ method, otherwise you
+                    have to handle the exception right there using try/catch statement!!
+
+             - The 2nd map, check if is there any result for the character being searched, and if not
+                    an exception will throw later…
+
+             - The 3rd map, really map response model into database model using Mapper class.
+
+             - and finally, the last map, insert response into database for further cache.
+         */
         subscription = interactor.loadCharacter(query, Constants.PRIVATE_KEY, Constants.PUBLIC_KEY, timestamp)
                 // check if result code is OK
                 .map(charactersResponse -> {
