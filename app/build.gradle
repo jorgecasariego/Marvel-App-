@@ -1,0 +1,169 @@
+apply plugin: 'com.android.application'
+apply plugin: 'jacoco-android'
+apply plugin: 'me.tatarka.retrolambda'
+apply plugin: 'com.neenbedankt.android-apt'
+
+/**
+ Android Gradle build variant
+
+ A build variant is a distinct combination of build type and build flavor.
+ In an app build configuration, there is exactly one variant for each possible combination
+ of type and flavor. For example, if you have debug and release types configured,
+ as well as “free” and “paid” flavors configured, the Android Gradle plugin will generate a
+ matrix of variants containing the combinations "debug/free", "debug/paid", "release/free",
+ and "release/paid". Every APK built from your code will be exactly one of these variants.
+ */
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        applicationId "jorgecasariego.marvelspanish"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.compileSdkVersion
+        versionCode 1
+        versionName "1.0"
+        vectorDrawables.useSupportLibrary = true
+
+        dataBinding {
+            enabled = true
+        }
+
+        /* replaced with custom MockTestRunner */
+        // testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "jorgecasariego.marvelspanish.MarvelTestRunner"
+    }
+
+    /**
+     * When the Android Gradle plugin configures your app at build time, it defines, by default,
+     * "debug" and "release" build types. These are configured in the buildTypes block,
+     * and you can add additional types as needed. The debug type is configured for everyday
+     * development, and release is meant for distribution to users.
+     */
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        debug {
+            applicationIdSuffix '.debug'
+            versionNameSuffix '-debug'
+
+            // Run code coverage reports by default on debug builds.
+            testCoverageEnabled true
+        }
+    }
+
+    /**
+     * When configuring an Android app at build time, it can optionally be assigned a
+     * "build flavor". These are similar to build types, but build flavors allow further
+     * independent configurations as needed. For example, you can build both “free” and “paid”
+     * versions of your app that are mostly the same, except for some key differences, such as
+     * application ID and the features you choose to enable.
+     */
+    productFlavors {
+        prod {
+        }
+
+        mock {
+        }
+    }
+
+    dataBinding {
+        enabled = true
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    /* allow using java 8 lambda */
+    compileOptions {
+        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_8
+    }
+
+    /* fixes espresso conflict with supportAnnotation and androidSupport new versions */
+    configurations.all {
+        resolutionStrategy {
+            force rootProject.ext.testLibraries.supportAnnotations
+            force rootProject.ext.libraries.androidSupport
+            force rootProject.ext.libraries.appCompat
+            force rootProject.ext.libraries.designSupport
+            force rootProject.ext.libraries.recyclerView
+        }
+    }
+}
+
+// Grant animation permissions to avoid test failure because of ui sync.
+task grantAnimationPermissions(type: Exec, dependsOn: 'installMock') {
+    group = 'test'
+    description = 'Grant permissions for testing.'
+
+    def absolutePath = file('..') // Get project absolute path
+    commandLine "$absolutePath/set_animation_permissions.sh jorgecasariego.marvelspanish".split(" ")
+}
+
+// Source: http://stackoverflow.com/q/29908110/112705
+afterEvaluate {
+    tasks.each { task ->
+        if (task.name.startsWith('assembleMockAndroidTest')) {
+            task.dependsOn grantAnimationPermissions
+        }
+    }
+}
+
+jacocoAndroidUnitTestReport {
+    // fix jacoco issue with ButterKnife
+    excludes += ['**/*$ViewBinder*.*']
+}
+
+dependencies {
+
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile project(':marvel-core')
+
+    testCompile rootProject.ext.testLibraries.junit
+    testCompile rootProject.ext.testLibraries.robolectric
+
+    androidTestCompile rootProject.ext.testLibraries.mockito
+    androidTestCompile rootProject.ext.testLibraries.dexmaker
+    androidTestCompile rootProject.ext.testLibraries.dexmakerMockito
+    androidTestCompile rootProject.ext.testLibraries.supportTestRunner
+    androidTestCompile rootProject.ext.testLibraries.supportAnnotations
+    androidTestCompile rootProject.ext.testLibraries.espresso
+    androidTestCompile rootProject.ext.testLibraries.espressoContrib
+
+    compile rootProject.ext.libraries.appCompat
+    compile rootProject.ext.libraries.androidSupport
+    compile rootProject.ext.libraries.designSupport
+    compile rootProject.ext.libraries.vectorSupport
+    compile rootProject.ext.libraries.recyclerView
+    compile rootProject.ext.libraries.cardView
+    compile rootProject.ext.libraries.palette
+
+    compile rootProject.ext.libraries.rxandroid
+    compile rootProject.ext.libraries.rxbinding
+
+    compile rootProject.ext.libraries.utils
+
+    compile rootProject.ext.libraries.picasso
+
+    compile rootProject.ext.libraries.butterknife
+    apt rootProject.ext.aptLibraries.butterknifeCompiler
+
+    compile rootProject.ext.libraries.dagger
+    apt rootProject.ext.aptLibraries.daggerCompiler
+    androidTestApt rootProject.ext.aptLibraries.daggerCompiler
+
+    compile rootProject.ext.libraries.timber
+
+    compile rootProject.ext.libraries.ormLite
+
+    compile rootProject.ext.libraries.firebaseCore
+    compile rootProject.ext.libraries.firebaseCrash
+    compile 'com.android.support:support-annotations:25.0.0'
+}
+
+apply plugin: 'com.google.gms.google-services'

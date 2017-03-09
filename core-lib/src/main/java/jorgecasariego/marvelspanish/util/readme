@@ -1,0 +1,4 @@
+full of useful classes which are required for the project, namely:
+    * Constants:  which holds all core const variables
+    * HashGenerator: which is being used for Marvel’s API calls hash parameter
+    * SchedulerProvider: which is an Scheduler interface that helps with RxJava and RxAndroid multi-threading

@@ -1,0 +1,6 @@
+Full of useful Android-side classes which are required for the project, namely:
+    - AppConstants: which extends core’s Constants class and contains Application const variables
+    - AppSchedulerProvider: which implement core’s SchedulerProvider and provides RxAndroid Schedulers
+    - CustomBindingAdapter: which helps with new Android DataBinding plugin for loading images using
+        Picasso library
+    - GridSpacingItemDecoration: which helps with RecyclerView grid item spacing.

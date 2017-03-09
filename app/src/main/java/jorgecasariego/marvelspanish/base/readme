@@ -1,0 +1,2 @@
+holds 2 base abstract classes of Activity and Fragment which contain general methods for
+injection and could be used for other general methods.
